@@ -16,7 +16,7 @@ const state = {
       nombre: 'Laptop Gamer XYZ', 
       precio: 850.00, 
       desc: 'Procesador i7, 16GB RAM, SSD 512GB', 
-      img: 'Imagenes/LaptopEjemplo.jpg', // <--- Aquí la ruta local
+      img: 'imagenes/LaptopEjemplo.jpg', // <--- Aquí la ruta local
       vendedor: 'vendedor' 
     },
     { 
@@ -24,7 +24,7 @@ const state = {
       nombre: 'Mouse Inalámbrico', 
       precio: 25.50, 
       desc: 'Sensor óptico 16000 DPI', 
-      img: 'Imagenes/MouseEjemplo.jpg', // <--- Aquí la ruta local
+      img: 'imagenes/MouseEjemplo.jpg', // <--- Aquí la ruta local
       vendedor: 'vendedor' 
     },
     { 
@@ -32,7 +32,7 @@ const state = {
       nombre: 'Teclado Mecánico RGB', 
       precio: 65.00, 
       desc: 'Switches Red, retroiluminado', 
-      img: 'Imagenes/TecladoEjemplo.jpg', // <--- Aquí la ruta local
+      img: 'imagenes/TecladoEjemplo.jpg', // <--- Aquí la ruta local
       vendedor: 'vendedor' 
     }
   ],
