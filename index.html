@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BinaryShop - E-Commerce</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVEGACIÓN Y HEADER -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="#" class="logo" id="btn-home">BinaryShop</a>
+      
+      <nav class="nav-links">
+        <button id="nav-catalogo" class="nav-btn active">Catálogo</button>
+        <button id="nav-vendedor" class="nav-btn hidden">Panel Vendedor</button>
+        <button id="nav-admin" class="nav-btn hidden">Panel Admin</button>
+      </nav>
+
+      <div class="user-cart-section">
+        <div class="user-info">
+          <span id="user-display">Invitado</span>
+          <button id="btn-auth" class="btn-sm">Iniciar Sesión</button>
+        </div>
+
+        <!-- CARRITO DE COMPRAS -->
+        <div class="submenu-carrito">
+          <button id="btn-cart-toggle" class="cart-icon-btn">
+            🛒 <span id="cart-count">0</span>
+          </button>
+          
+          <div id="carrito-dropdown" class="carrito-dropdown hidden">
+            <h4>Carrito de Compras</h4>
+            <table id="lista-carrito">
+              <thead>
+                <tr>
+                  <th>Imagen</th>
+                  <th>Nombre</th>
+                  <th>Precio</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody><!-- Dinámico --></tbody>
+            </table>
+            <div class="cart-total-container">
+              <strong>Total: $<span id="cart-total">0.00</span></strong>
+            </div>
+            <div class="cart-actions">
+              <button id="vaciar-carrito" class="btn-secondary">Vaciar Carrito</button>
+              <button id="btn-checkout" class="btn-primary">Procesar Compra</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+
+    <!-- SECCIÓN: AUTENTICACIÓN (LOGIN / REGISTRO) -->
+    <section id="sec-auth" class="view-section hidden">
+      <div class="auth-container">
+        <div class="auth-tabs">
+          <button id="tab-login" class="tab-btn active">Iniciar Sesión</button>
+          <button id="tab-register" class="tab-btn">Registrarse</button>
+        </div>
+
+        <!-- FORMULARIO LOGIN -->
+        <form id="form-login" class="auth-form">
+          <h3>Autenticación</h3>
+          <p class="hint">Credenciales de prueba:<br>
+             • Cliente: <b>Cliente</b> / <b>123</b><br>
+             • Vendedor: <b>vendedor</b> / <b>123</b><br>
+             • Admin: <b>admin</b> / <b>123</b>
+          </p>
+          <div class="form-group">
+            <label for="login-nickname">Nombre de usuario:</label>
+            <input type="text" id="login-nickname" required placeholder="Ej: Cliente">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Contraseña:</label>
+            <input type="password" id="login-password" required placeholder="***">
+          </div>
+          <div class="form-group">
+            <label for="login-role">Rol:</label>
+            <select id="login-role">
+              <option value="Cliente">Cliente</option>
+              <option value="Vendedor">Vendedor</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Ingresar</button>
+        </form>
+
+        <!-- FORMULARIO REGISTRO -->
+        <form id="form-register" class="auth-form hidden">
+          <h3>Registro de Usuario</h3>
+          <div class="form-group">
+            <label for="reg-nombre">Nombre:</label>
+            <input type="text" id="reg-nombre" required placeholder="Nombre">
+          </div>
+          <div class="form-group">
+            <label for="reg-apellido">Apellido:</label>
+            <input type="text" id="reg-apellido" required placeholder="Apellido">
+          </div>
+          <div class="form-group">
+            <label for="reg-direccion">Dirección:</label>
+            <input type="text" id="reg-direccion" required placeholder="Caracas, Venezuela">
+          </div>
+          <div class="form-group">
+            <label for="reg-nickname">Nickname:</label>
+            <input type="text" id="reg-nickname" required placeholder="Usuario">
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Contraseña:</label>
+            <input type="password" id="reg-password" required placeholder="***">
+          </div>
+          <div class="form-group">
+            <label for="reg-banco">Datos Bancarios / Cuenta:</label>
+            <input type="text" id="reg-banco" required placeholder="0102-XXXX-XXXX-XXXX">
+          </div>
+          <div class="form-group">
+            <label for="reg-role">Rol de Registro:</label>
+            <select id="reg-role">
+              <option value="Cliente">Cliente</option>
+              <option value="Vendedor">Vendedor</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Crear Cuenta</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- SECCIÓN: CATÁLOGO DE PRODUCTOS -->
+    <section id="sec-catalogo" class="view-section">
+      <h2>Catálogo de Productos</h2>
+      <div id="grid-productos" class="products-grid">
+        <!-- Renderizado dinámico -->
+      </div>
+    </section>
+
+    <!-- SECCIÓN: CHECKOUT / PASARELA DE PAGO -->
+    <section id="sec-checkout" class="view-section hidden">
+      <h2>Procesar Compra (Pasarela de Pago)</h2>
+      <div class="checkout-wrapper">
+        <form id="form-checkout" class="card-panel">
+          <h3>Datos del Pago</h3>
+          <div class="form-group">
+            <label for="pay-card">Número de Tarjeta / Cuenta Bancaria:</label>
+            <input type="text" id="pay-card" required placeholder="1234-5678-9012-3456">
+          </div>
+          <div class="form-group">
+            <label for="pay-address">Dirección de Envío:</label>
+            <input type="text" id="pay-address" required placeholder="Av. Universidad, UCV">
+          </div>
+          <h4>Monto Total a Cancelar: $<span id="checkout-monto">0.00</span></h4>
+          <button type="submit" class="btn-primary">Confirmar y Pagar</button>
+          <button type="button" id="btn-cancel-checkout" class="btn-secondary">Volver al Catálogo</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- SECCIÓN: PANEL DE VENDEDOR -->
+    <section id="sec-vendedor" class="view-section hidden">
+      <h2>Panel del Vendedor</h2>
+      <div class="seller-layout">
+        <form id="form-publicar" class="card-panel">
+          <h3>Publicar Nuevo Producto</h3>
+          <div class="form-group">
+            <label for="prod-nombre">Nombre del Producto:</label>
+            <input type="text" id="prod-nombre" required placeholder="Ej. Teclado Mecánico">
+          </div>
+          <div class="form-group">
+            <label for="prod-precio">Precio ($):</label>
+            <input type="number" id="prod-precio" step="0.01" min="0.1" required placeholder="49.99">
+          </div>
+          <div class="form-group">
+            <label for="prod-desc">Descripción:</label>
+            <textarea id="prod-desc" required placeholder="Descripción del artículo..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="prod-img">URL de la Imagen:</label>
+            <input type="url" id="prod-img" required placeholder="https://via.placeholder.com/200">
+          </div>
+          <button type="submit" class="btn-primary">Publicar Artículo</button>
+        </form>
+
+        <div class="card-panel">
+          <h3>Historial de Ventas</h3>
+          <ul id="lista-ventas-historial" class="simple-list">
+            <li>No se han registrado ventas aún.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN: PANEL DE ADMINISTRADOR -->
+    <section id="sec-admin" class="view-section hidden">
+      <h2>Panel de Administración</h2>
+      <div class="admin-layout">
+        <div class="card-panel">
+          <h3>Gestión de Usuarios</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-admin-usuarios">
+              <!-- Carga dinámica -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card-panel">
+          <h3>Gestión de Publicaciones</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Vendedor</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-admin-productos">
+              <!-- Carga dinámica -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
