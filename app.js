@@ -5,7 +5,7 @@
 const state = {
   currentUser: null, 
   users: [
-    { nickname: 'comprador', password: '123', role: 'Cliente', nombre: 'Juan Pérez' },
+    { nickname: 'cliente', password: '123', role: 'Cliente', nombre: 'Juan Pérez' },
     { nickname: 'vendedor', password: '123', role: 'Vendedor', nombre: 'María Gómez' },
     { nickname: 'admin', password: '123', role: 'Administrador', nombre: 'Admin Sistema' }
   ],
