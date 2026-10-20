@@ -2,39 +2,17 @@
  * BinaryShop - Prototipo Web Vanilla JS (Fase II)
  */
 
-// ================= ESTADO DE LA APLICACIÓN =================
 const state = {
-  currentUser: null,
+  currentUser: null, 
   users: [
-    { nickname: 'Cliente', password: '123', role: 'Cliente', nombre: 'Juan Pérez' },
-    { nickname: 'Vendedor', password: '123', role: 'Vendedor', nombre: 'María Gómez' },
-    { nickname: 'Admin', password: '123', role: 'Administrador', nombre: 'Admin Sistema' }
+    { nickname: 'comprador', password: '123', role: 'Cliente', nombre: 'Juan Pérez' },
+    { nickname: 'vendedor', password: '123', role: 'Vendedor', nombre: 'María Gómez' },
+    { nickname: 'admin', password: '123', role: 'Administrador', nombre: 'Admin Sistema' }
   ],
   products: [
-    { 
-      id: 1, 
-      nombre: 'Laptop Gamer XYZ', 
-      precio: 850.00, 
-      desc: 'Procesador i7, 16GB RAM, SSD 512GB', 
-      img: 'imagenes/LaptopEjemplo.jpg', // <--- Aquí la ruta local
-      vendedor: 'vendedor' 
-    },
-    { 
-      id: 2, 
-      nombre: 'Mouse Inalámbrico', 
-      precio: 25.50, 
-      desc: 'Sensor óptico 16000 DPI', 
-      img: 'imagenes/MouseEjemplo.jpg', // <--- Aquí la ruta local
-      vendedor: 'vendedor' 
-    },
-    { 
-      id: 3, 
-      nombre: 'Teclado Mecánico RGB', 
-      precio: 65.00, 
-      desc: 'Switches Red, retroiluminado', 
-      img: 'imagenes/TecladoEjemplo.jpg', // <--- Aquí la ruta local
-      vendedor: 'vendedor' 
-    }
+    { id: 1, nombre: 'Laptop Gamer XYZ', precio: 850.00, desc: 'Procesador i7, 16GB RAM, SSD 512GB', img: 'imagenes/LaptopEjemplo.jpg', vendedor: 'vendedor' },
+    { id: 2, nombre: 'Mouse Inalámbrico', precio: 25.50, desc: 'Sensor óptico 16000 DPI', img: 'imagenes/MouseEjemplo.jpg', vendedor: 'vendedor' },
+    { id: 3, nombre: 'Teclado Mecánico RGB', precio: 65.00, desc: 'Switches Red, retroiluminado', img: 'imagenes/TecladoEjemplo.jpg', vendedor: 'vendedor' }
   ],
   cart: [],
   salesHistory: []
@@ -42,7 +20,6 @@ const state = {
 
 // ================= REFERENCIAS DOM =================
 const elements = {
-  // Navegación
   navCatalogo: document.getElementById('nav-catalogo'),
   navVendedor: document.getElementById('nav-vendedor'),
   navAdmin: document.getElementById('nav-admin'),
@@ -56,14 +33,12 @@ const elements = {
   vaciarCarritoBtn: document.getElementById('vaciar-carrito'),
   btnCheckout: document.getElementById('btn-checkout'),
 
-  // Vistas
   secAuth: document.getElementById('sec-auth'),
   secCatalogo: document.getElementById('sec-catalogo'),
   secCheckout: document.getElementById('sec-checkout'),
   secVendedor: document.getElementById('sec-vendedor'),
   secAdmin: document.getElementById('sec-admin'),
 
-  // Formularios
   tabLogin: document.getElementById('tab-login'),
   tabRegister: document.getElementById('tab-register'),
   formLogin: document.getElementById('form-login'),
@@ -78,6 +53,21 @@ const elements = {
   tablaAdminProductos: document.getElementById('tabla-admin-productos')
 };
 
+// ================= SISTEMA DE MENSAJES (TOAST) =================
+function mostrarMensaje(texto) {
+  const toastExistente = document.querySelector('.toast-notification');
+  if (toastExistente) toastExistente.remove();
+
+  const toast = document.createElement('div');
+  toast.className = 'toast-notification';
+  toast.textContent = texto;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
+
 // ================= INICIALIZACIÓN Y EVENTOS =================
 document.addEventListener('DOMContentLoaded', () => {
   initEvents();
@@ -86,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initEvents() {
-  // Navegación entre pestañas
   elements.navCatalogo.addEventListener('click', () => switchView('catalogo'));
   elements.navVendedor.addEventListener('click', () => switchView('vendedor'));
   elements.navAdmin.addEventListener('click', () => switchView('admin'));
@@ -95,12 +84,10 @@ function initEvents() {
     switchView('catalogo');
   });
 
-  // Carrito Dropdown Toggle
   elements.btnCartToggle.addEventListener('click', () => {
     elements.carritoDropdown.classList.toggle('hidden');
   });
 
-  // Autenticación Modal / Navegación
   elements.btnAuth.addEventListener('click', () => {
     if (state.currentUser) {
       logout();
@@ -123,44 +110,42 @@ function initEvents() {
     elements.formLogin.classList.add('hidden');
   });
 
-  // Formulario Login
   elements.formLogin.addEventListener('submit', handleLogin);
   elements.formRegister.addEventListener('submit', handleRegister);
 
-  // Carrito Acciones
   elements.vaciarCarritoBtn.addEventListener('click', vaciarCarrito);
   elements.btnCheckout.addEventListener('click', () => {
     if (state.cart.length === 0) {
-      alert('El carrito está vacío');
+      mostrarMensaje('El carrito está vacío.');
       return;
     }
     if (!state.currentUser) {
-      alert('Debes iniciar sesión para procesar la compra.');
+      mostrarMensaje('Inicia sesión para continuar con la compra.');
       switchView('auth');
       return;
     }
+    if (state.currentUser.role === 'Vendedor' || state.currentUser.role === 'Administrador') {
+      mostrarMensaje('Los perfiles de Vendedor y Administrador no tienen permitido realizar compras.');
+      return;
+    }
+
     elements.carritoDropdown.classList.add('hidden');
     switchView('checkout');
   });
 
-  // Checkout Form
   elements.formCheckout.addEventListener('submit', procesarCompra);
   elements.btnCancelCheckout.addEventListener('click', () => switchView('catalogo'));
-
-  // Vendedor Form
   elements.formPublicar.addEventListener('submit', publicarProducto);
 }
 
 // ================= CONTROL DE VISTAS =================
 function switchView(viewName) {
-  // Ocultar todas las secciones
   elements.secAuth.classList.add('hidden');
   elements.secCatalogo.classList.add('hidden');
   elements.secCheckout.classList.add('hidden');
   elements.secVendedor.classList.add('hidden');
   elements.secAdmin.classList.add('hidden');
 
-  // Quitar active de nav
   elements.navCatalogo.classList.remove('active');
   elements.navVendedor.classList.remove('active');
   elements.navAdmin.classList.remove('active');
@@ -185,7 +170,7 @@ function switchView(viewName) {
   }
 }
 
-// ================= MANEJO DE USUARIOS Y AUTENTICACIÓN =================
+// ================= AUTENTICACIÓN =================
 function handleLogin(e) {
   e.preventDefault();
   const nick = document.getElementById('login-nickname').value.trim();
@@ -197,11 +182,12 @@ function handleLogin(e) {
   if (found) {
     state.currentUser = found;
     updateUserNavUI();
-    alert(`Bienvenido, ${found.nombre || found.nickname}`);
+    renderProducts(); // Re-renderizar catálogo para actualizar visibilidad de botones de compra
+    mostrarMensaje(`¡Bienvenido de nuevo, ${found.nombre || found.nickname}!`);
     elements.formLogin.reset();
     switchView('catalogo');
   } else {
-    alert('Credenciales o rol incorrectos. Revisa los datos ingresados.');
+    mostrarMensaje('Credenciales o rol incorrectos. Inténtalo de nuevo.');
   }
 }
 
@@ -213,7 +199,7 @@ function handleRegister(e) {
   const role = document.getElementById('reg-role').value;
 
   if (state.users.some(u => u.nickname === nickname)) {
-    alert('El nickname ya se encuentra registrado.');
+    mostrarMensaje('Este nickname ya está registrado en el sistema.');
     return;
   }
 
@@ -222,7 +208,8 @@ function handleRegister(e) {
   state.currentUser = newUser;
   
   updateUserNavUI();
-  alert('Registro exitoso. Tu cuenta ha sido creada e iniciaste sesión automáticamente.');
+  renderProducts();
+  mostrarMensaje('¡Cuenta creada con éxito! Sesión iniciada.');
   elements.formRegister.reset();
   switchView('catalogo');
 }
@@ -230,6 +217,8 @@ function handleRegister(e) {
 function logout() {
   state.currentUser = null;
   updateUserNavUI();
+  renderProducts(); // Re-renderizar catálogo para mostrar botones de compra a invitados
+  mostrarMensaje('Has cerrado sesión correctamente.');
   switchView('catalogo');
 }
 
@@ -238,7 +227,6 @@ function updateUserNavUI() {
     const role = state.currentUser.role;
     const displayName = state.currentUser.nombre || state.currentUser.nickname;
 
-    // Si es Administrador queda vacío, si es Cliente o Vendedor muestra el nombre
     if (role === 'Administrador') {
       elements.userDisplay.textContent = '';
     } else {
@@ -247,7 +235,6 @@ function updateUserNavUI() {
 
     elements.btnAuth.textContent = 'Cerrar Sesión';
 
-    // Mostrar u ocultar botones del menú según el rol
     if (role === 'Vendedor') {
       elements.navVendedor.classList.remove('hidden');
       elements.navAdmin.classList.add('hidden');
@@ -268,16 +255,38 @@ function updateUserNavUI() {
 
 // ================= CATÁLOGO Y CARRITO =================
 function renderProducts() {
-  elements.gridProductos.innerHTML = '';
+  const grid = document.getElementById('grid-productos');
+  grid.innerHTML = '';
   
   if (state.products.length === 0) {
-    elements.gridProductos.innerHTML = '<p>No hay productos disponibles en el catálogo.</p>';
+    grid.innerHTML = '<p>No hay productos disponibles en este momento.</p>';
     return;
   }
+
+  // Comprobar si el usuario actual es Vendedor o Administrador
+  const esPersonalInterno = state.currentUser && (state.currentUser.role === 'Vendedor' || state.currentUser.role === 'Administrador');
 
   state.products.forEach(p => {
     const card = document.createElement('div');
     card.className = 'product-card';
+    
+    // Si es Vendedor o Admin, ocultamos los botones de compra/añadir al carrito en la interfaz
+    let botonesHTML = '';
+    if (!esPersonalInterno) {
+      botonesHTML = `
+        <div class="card-buttons">
+          <button class="btn-secondary" onclick="agregarAlCarrito(${p.id})">Añadir al carrito</button>
+          <button class="btn-primary" onclick="comprarInmediato(${p.id})">Comprar de inmediato</button>
+        </div>
+      `;
+    } else {
+      botonesHTML = `
+        <div class="card-buttons">
+          <p style="font-size: 0.8rem; color: #64748b; text-align: center; font-style: italic;">Vista de gestión (Compra no disponible)</p>
+        </div>
+      `;
+    }
+
     card.innerHTML = `
       <img src="${p.img}" alt="${p.nombre}" onerror="this.src='https://via.placeholder.com/200?text=Producto'">
       <div class="product-info">
@@ -285,16 +294,18 @@ function renderProducts() {
         <p class="product-price">$${p.precio.toFixed(2)}</p>
         <p style="font-size: 0.85rem; color: #64748b;">${p.desc}</p>
       </div>
-      <div class="card-buttons">
-        <button class="btn-secondary" onclick="agregarAlCarrito(${p.id})">Añadir al carrito</button>
-        <button class="btn-primary" onclick="comprarInmediato(${p.id})">Comprar de inmediato</button>
-      </div>
+      ${botonesHTML}
     `;
-    elements.gridProductos.appendChild(card);
+    grid.appendChild(card);
   });
 }
 
 function agregarAlCarrito(id) {
+  if (state.currentUser && (state.currentUser.role === 'Vendedor' || state.currentUser.role === 'Administrador')) {
+    mostrarMensaje('Acción restringida: Los administradores y vendedores no pueden comprar artículos.');
+    return;
+  }
+
   const prod = state.products.find(p => p.id === id);
   if (!prod) return;
 
@@ -306,15 +317,23 @@ function agregarAlCarrito(id) {
   }
 
   updateCartUI();
+  mostrarMensaje('¡Producto añadido al carrito!');
 }
 
 function comprarInmediato(id) {
+  if (state.currentUser && (state.currentUser.role === 'Vendedor' || state.currentUser.role === 'Administrador')) {
+    mostrarMensaje('Acción restringida: Los administradores y vendedores no pueden realizar compras.');
+    return;
+  }
+
   agregarAlCarrito(id);
-  if (!state.currentUser) {
-    alert('Debes iniciar sesión para procesar tu compra.');
-    switchView('auth');
-  } else {
-    switchView('checkout');
+  if (state.cart.length > 0) {
+    if (!state.currentUser) {
+      mostrarMensaje('Inicia sesión como cliente para procesar tu compra.');
+      switchView('auth');
+    } else {
+      switchView('checkout');
+    }
   }
 }
 
@@ -344,28 +363,29 @@ function updateCartUI() {
 function eliminarDelCarrito(id) {
   state.cart = state.cart.filter(item => item.id !== id);
   updateCartUI();
+  mostrarMensaje('Producto retirado del carrito.');
 }
 
 function vaciarCarrito() {
   state.cart = [];
   updateCartUI();
+  mostrarMensaje('Se ha vaciado el carrito de compras.');
 }
 
 function procesarCompra(e) {
   e.preventDefault();
   if (state.cart.length === 0) return;
 
-  // Registrar en historial de ventas del vendedor
   state.cart.forEach(item => {
     state.salesHistory.push({
       producto: item.nombre,
       monto: item.precio * item.cantidad,
-      Cliente: state.currentUser.nickname,
+      comprador: state.currentUser.nickname,
       fecha: new Date().toLocaleDateString()
     });
   });
 
-  alert('¡Compra realizada exitosamente! Gracias por su preferencia en BinaryShop.');
+  mostrarMensaje('¡Compra procesada con éxito! Gracias por elegirnos.');
   vaciarCarrito();
   switchView('catalogo');
 }
@@ -389,27 +409,26 @@ function publicarProducto(e) {
 
   state.products.push(newProd);
   renderProducts();
-  alert('Producto publicado correctamente en el catálogo.');
+  mostrarMensaje('¡Nuevo producto publicado en el catálogo con éxito!');
   elements.formPublicar.reset();
 }
 
 function renderVentasHistorial() {
   elements.listaVentas.innerHTML = '';
   if (state.salesHistory.length === 0) {
-    elements.listaVentas.innerHTML = '<li>No se han registrado ventas aún.</li>';
+    elements.listaVentas.innerHTML = '<li>No se han registrado ventas en el historial todavía.</li>';
     return;
   }
 
   state.salesHistory.forEach(v => {
     const li = document.createElement('li');
-    li.textContent = `${v.fecha} - ${v.producto} por $${v.monto.toFixed(2)} (Cliente: ${v.Cliente})`;
+    li.textContent = `${v.fecha} - ${v.producto} por $${v.monto.toFixed(2)} (Cliente: ${v.comprador})`;
     elements.listaVentas.appendChild(li);
   });
 }
 
 // ================= PANEL DE ADMINISTRADOR =================
 function renderAdminTables() {
-  // Tabla de Usuarios
   elements.tablaAdminUsuarios.innerHTML = '';
   state.users.forEach(u => {
     const tr = document.createElement('tr');
@@ -423,7 +442,6 @@ function renderAdminTables() {
     elements.tablaAdminUsuarios.appendChild(tr);
   });
 
-  // Tabla de Productos
   elements.tablaAdminProductos.innerHTML = '';
   state.products.forEach(p => {
     const tr = document.createElement('tr');
@@ -440,20 +458,23 @@ function renderAdminTables() {
 }
 
 function adminEliminarUsuario(nickname) {
+  if (state.currentUser && state.currentUser.nickname === nickname) {
+    mostrarMensaje('Acción denegada: El administrador no puede eliminar su propia cuenta activa.');
+    return;
+  }
+
   if (confirm(`¿Estás seguro de eliminar al usuario "${nickname}"?`)) {
     state.users = state.users.filter(u => u.nickname !== nickname);
-    if (state.currentUser && state.currentUser.nickname === nickname) {
-      logout();
-    } else {
-      renderAdminTables();
-    }
+    renderAdminTables();
+    mostrarMensaje('Usuario eliminado del sistema.');
   }
 }
 
 function adminEliminarProducto(id) {
-  if (confirm('¿Estás seguro de remover esta publicación?')) {
+  if (confirm('¿Estás seguro de remover esta publicación del catálogo?')) {
     state.products = state.products.filter(p => p.id !== id);
     renderProducts();
     renderAdminTables();
+    mostrarMensaje('Publicación removida correctamente.');
   }
 }
