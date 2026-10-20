@@ -1,5 +1,5 @@
 /**
- * BinaryShop - Prototipo Web Vanilla JS (Fase II)
+ * BinaryShop JS (Fase II)
  */
 
 const state = {
@@ -380,7 +380,7 @@ function procesarCompra(e) {
     state.salesHistory.push({
       producto: item.nombre,
       monto: item.precio * item.cantidad,
-      comprador: state.currentUser.nickname,
+      cliente: state.currentUser.nickname,
       fecha: new Date().toLocaleDateString()
     });
   });
@@ -422,7 +422,7 @@ function renderVentasHistorial() {
 
   state.salesHistory.forEach(v => {
     const li = document.createElement('li');
-    li.textContent = `${v.fecha} - ${v.producto} por $${v.monto.toFixed(2)} (Cliente: ${v.comprador})`;
+    li.textContent = `${v.fecha} - ${v.producto} por $${v.monto.toFixed(2)} (Cliente: ${v.cliente})`;
     elements.listaVentas.appendChild(li);
   });
 }
