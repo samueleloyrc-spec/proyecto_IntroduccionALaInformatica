@@ -1,7 +1,3 @@
-/**
- * BinaryShop JS (Fase II)
- */
-
 const state = {
   currentUser: null, 
   users: [
