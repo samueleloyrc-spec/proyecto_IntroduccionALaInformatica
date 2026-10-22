@@ -18,7 +18,7 @@ const state = {
   salesHistory: []
 };
 
-// ================= REFERENCIAS DOM =================
+//  REFERENCIAS DOM
 const elements = {
   navCatalogo: document.getElementById('nav-catalogo'),
   navVendedor: document.getElementById('nav-vendedor'),
@@ -53,7 +53,7 @@ const elements = {
   tablaAdminProductos: document.getElementById('tabla-admin-productos')
 };
 
-// ================= SISTEMA DE MENSAJES (TOAST) =================
+// SISTEMA DE MENSAJES
 function mostrarMensaje(texto) {
   const toastExistente = document.querySelector('.toast-notification');
   if (toastExistente) toastExistente.remove();
@@ -68,7 +68,7 @@ function mostrarMensaje(texto) {
   }, 3000);
 }
 
-// ================= INICIALIZACIÓN Y EVENTOS =================
+// INICIALIZACIÓN Y EVENTOS
 document.addEventListener('DOMContentLoaded', () => {
   initEvents();
   renderProducts();
@@ -138,7 +138,7 @@ function initEvents() {
   elements.formPublicar.addEventListener('submit', publicarProducto);
 }
 
-// ================= CONTROL DE VISTAS =================
+// CONTROL DE VISTAS
 function switchView(viewName) {
   elements.secAuth.classList.add('hidden');
   elements.secCatalogo.classList.add('hidden');
@@ -170,7 +170,7 @@ function switchView(viewName) {
   }
 }
 
-// ================= AUTENTICACIÓN =================
+// AUTENTICACIÓN
 function handleLogin(e) {
   e.preventDefault();
   const nick = document.getElementById('login-nickname').value.trim();
@@ -253,7 +253,7 @@ function updateUserNavUI() {
   }
 }
 
-// ================= CATÁLOGO Y CARRITO =================
+// CATÁLOGO Y CARRITO
 function renderProducts() {
   const grid = document.getElementById('grid-productos');
   grid.innerHTML = '';
@@ -390,7 +390,7 @@ function procesarCompra(e) {
   switchView('catalogo');
 }
 
-// ================= PANEL DE VENDEDOR =================
+// PANEL DE VENDEDOR
 function publicarProducto(e) {
   e.preventDefault();
   const nombre = document.getElementById('prod-nombre').value.trim();
@@ -427,7 +427,7 @@ function renderVentasHistorial() {
   });
 }
 
-// ================= PANEL DE ADMINISTRADOR =================
+// PANEL DE ADMINISTRADOR
 function renderAdminTables() {
   elements.tablaAdminUsuarios.innerHTML = '';
   state.users.forEach(u => {
